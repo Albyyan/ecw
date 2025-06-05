@@ -1,0 +1,40 @@
+/* src/components/Footer.css */
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #000;
+  color: #ffffff;
+  padding: 2rem 0;
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  border-top: 1px solid #333;
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.social-links {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.social-icon {
+  width: 40px;
+  height: 40px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+/* Hover and active states */
+.social-icon:hover,
+.social-icon:active {
+  transform: scale(1.1);
+  box-shadow: 0 0 15px #00e6e6, 0 0 30px #00e6e6;
+}

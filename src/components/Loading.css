@@ -1,0 +1,44 @@
+/* Loading.css */
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.loading-image {
+  width: 100px;
+  height: auto;
+  animation: rotate 2s linear infinite;
+}
+
+.loading-text {
+  color: white;
+  margin-top: 1rem;
+  font-size: 1.5rem;
+  font-family: Cinzel, sans-serif;
+}
+
+@keyframes rotate {
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(360deg); }
+  100% { transform: rotate(720deg); }
+}
+
+.content {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.content.loaded {
+  opacity: 1;
+}

@@ -1,0 +1,36 @@
+/* src/components/Parallax.css */
+
+.parallax-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: -1; /* Keeps it behind the main content */
+}
+
+.parallax__back,
+.parallax__front {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  transform-origin: center;
+  transition: transform 0.1s ease-out;
+}
+
+.parallax__back {
+  background-image: url('../assets/WebsiteBGBack.png');
+  z-index: 1;
+}
+
+.parallax__front {
+  background-image: url('../assets/WebsiteBGFront.png');
+  z-index: 2;
+  opacity: 0.8;
+}
