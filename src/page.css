@@ -16,19 +16,20 @@
 }
 
 .logo {
-    position: fixed;
-    top: 0;
-    left: 15%;
-    width: 15rem;
-    height: 15rem;
-    background-image: url('assets/ECWLogo.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    z-index: 11;
-    transform: scale(0);
-    animation: popEffect 0.5s ease-out 0.5s forwards, spin 4s linear 1s infinite;
+  position: fixed;
+  top: 0;
+  left: 5vw;
+  width: clamp(6rem, 15vw, 15rem);
+  height: clamp(6rem, 15vw, 15rem);
+  background-image: url('assets/ECWLogo.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: 11;
+  transform: scale(0);
+  animation: popEffect 0.5s ease-out 0.5s forwards, spin 4s linear 1s infinite;
 }
+
 
 .nav-wrapper {
   position: relative;
@@ -47,8 +48,21 @@
   background: transparent;
   padding: 0.5rem 2rem;
   z-index: 11; /* higher than top-bar */
+  transition: all 0.3s ease;
 }
 
+/* Half-sticky effect when nav reaches middle of top bar */
+.header-nav.nav-stuck {
+  position: fixed;
+  top: 2rem; /* middle of the 4rem top bar */
+  left: 0;
+  right: 0;
+  background: rgba(29, 33, 44, 0.95);
+  backdrop-filter: blur(15px);
+  border-radius: 0 0 1rem 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  width: 100%;
+}
 
 .header-nav a {
     color: white;
@@ -102,8 +116,8 @@
 }
 
 .ecw-heading {
-  position: relative;
-  margin-top: 10rem; /* instead of top: 15rem */
+  position: absolute;
+  top: 15rem;
   left: 15%;
   width: 70%;
 }
@@ -118,42 +132,21 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   text-align: left; /* ensure left alignment */
-}
-.alice-mascot {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 10rem;
-  height: auto;
-  opacity: 0;
-  animation:
-    fadeInAlice 1.2s ease-in 2.5s forwards,
-    floatSquid 6s ease-in-out infinite;
-  pointer-events: none; /* optional: avoids interfering with clicks */
+  min-height: 1.2em; /* Prevent layout shift during typing */
 }
 
+/* Typewriter caret */
+.caret {
+  animation: blink 1s infinite;
+  color: #99b0ea;
+}
 
-@keyframes fadeInAlice {
-  to {
+@keyframes blink {
+  0%, 50% {
     opacity: 1;
   }
-}
-
-@keyframes floatSquid {
-  0% {
-    transform: translate(0, 0);
-  }
-  25% {
-    transform: translate(3px, -4px);
-  }
-  50% {
-    transform: translate(0px, -2px);
-  }
-  75% {
-    transform: translate(-3px, -4px);
-  }
-  100% {
-    transform: translate(0, 0);
+  51%, 100% {
+    opacity: 0;
   }
 }
 
@@ -234,13 +227,23 @@
 }
 
 
-/* Left graphic placeholder */
+/* Alice image with floating animation */
 .about-graphic-placeholder {
   width: 35%;
-  height: 100%;
-  background: rgba(153, 176, 234, 0.1); /* soft visual placeholder */
-  border: 2px dashed #99b0ea;
+  height: 50vh;
+  background-image: url('assets/Alice.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
   border-radius: 1rem;
+  transform: translateX(-150%);
+  opacity: 0;
+}
+
+.alice-container.animate-alice {
+  animation: 
+    floatInFromLeft 2s ease-out forwards,
+    erraticFloat 6s ease-in-out 2s infinite;
 }
 
 /* Right text block */
@@ -343,3 +346,89 @@
     }
 }
 
+/* Alice floating animations */
+@keyframes floatInFromLeft {
+  0% {
+    transform: translateX(-150%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes erraticFloat {
+  0% {
+    transform: translateX(0) translateY(0) rotate(0deg);
+  }
+  15% {
+    transform: translateX(20px) translateY(-15px) rotate(2deg);
+  }
+  30% {
+    transform: translateX(-10px) translateY(25px) rotate(-1deg);
+  }
+  45% {
+    transform: translateX(25px) translateY(-20px) rotate(3deg);
+  }
+  60% {
+    transform: translateX(-20px) translateY(10px) rotate(-2deg);
+  }
+  75% {
+    transform: translateX(15px) translateY(-25px) rotate(1deg);
+  }
+  90% {
+    transform: translateX(-25px) translateY(20px) rotate(-3deg);
+  }
+  100% {
+    transform: translateX(0) translateY(0) rotate(0deg);
+  }
+}
+/* === Mobile Navbar Toggle === */
+.menu-toggle {
+  display: none; /* Hidden by default (desktop) */
+}
+
+@media (max-width: 1400px) {
+  .menu-toggle {
+    display: block;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2.5rem;
+    cursor: pointer;
+    position: fixed;
+    top: 1rem;
+    right: 1.5rem;
+    z-index: 100;
+  }
+
+  .header-nav {
+    display: none;
+    flex-direction: column;
+    position: fixed;
+    top: 4rem;
+    right: 0;
+    background-color: rgba(29, 33, 44, 0.95);
+    padding: 1rem 2rem;
+    border-radius: 0 0 0 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    width: 60%;
+    z-index: 99;
+  }
+
+  .header-nav.show {
+    display: flex;
+  }
+
+  .header-nav a {
+    font-size: 1.5rem;
+    padding: 1rem 0;
+    transform: none !important; /* override animations */
+  }
+
+  .header-nav.nav-stuck {
+    position: fixed;
+    top: 4rem;
+  }
+}

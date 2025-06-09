@@ -21,6 +21,7 @@
 <div class="logo"></div>
 
 <div class="nav-wrapper">
+  <button class="menu-toggle" aria-label="Toggle Menu">&#9776;</button>
   <nav class="header-nav">
     <a href="#about">ABOUT US</a>
     <a href="#events">EVENTS</a>
@@ -29,9 +30,9 @@
   </nav>
 </div>
 
+
 <div class="ecw-heading">
-  <p>WE ARE THE UNSW ENGLISH AND CREATIVE WRITING SOCIETY.</p>
-  <img src="src/assets/Alice.png" class="alice-mascot" alt="Alice">
+  <p id="typewriter-text"></p>
 </div>
 <!-- Add these OUTSIDE the container, but in the same relative section -->
 <div class="marquee-line top-line"></div>
@@ -41,27 +42,92 @@
     <div class="marquee-text">We are where ink meets paper and thoughts become stories. Where words are drawn together like sand washed ashore, building crumbling castles with cracked seashells for windows.
 
 </div>
-    <div class="marquee-text">We are where ink meets paper and thoughts become stories. Where words are drawn together like sand washed ashore, building crumbling castles with cracked seashells for windows.
+    <div class="marquee-text" id="about">We are where ink meets paper and thoughts become stories. Where words are drawn together like sand washed ashore, building crumbling castles with cracked seashells for windows.
 
 </div>
   </div>
 </div>
 <!-- End of marquee -->
-<div class="marquee-line bottom-line" id="about"></div>
+<div class="marquee-line bottom-line"></div>
 
 <!-- START About Us section -->
 <section class="about-us-section">
-  <div class="about-graphic-placeholder"></div>
+  <div class="about-graphic-placeholder alice-container"></div>
   <div class="about-text">
     <h2>ABOUT US</h2>
     <p>
-      We are the pen that listens before it speaks, the pause between words that dares to say more.  
-      At the UNSW English and Creative Writing Society, we create a home for thinkers, readers, poets, and storytellers of all kinds.  
-      Whether you're scribbling in the margins or publishing your first zine, we’re here to share the journey.  
-      Join us as we explore fiction, find form in chaos, and leave ink trails where silence once lived.
+We are the English & Creative Writing Society, a pen of readers and writers who aim to fill pages and conjure stories from the wells of their imagination. We offer a sanctuary for the private wordsmiths to write away under the promise of warm reception when they are ready to share. For the jesters and poets who buzz off the ears and eyes that consume their work, we offer an audience eager to give feedback and noise. You will find a community here, for just because writing is an endeavour taken alone, it is not one that has to be lonely.
     </p>
   </div>
 </section>
+
+<script>
+// Typewriter effect
+const text = "WE ARE THE UNSW ENGLISH AND CREATIVE WRITING SOCIETY.";
+const typewriterElement = document.getElementById('typewriter-text');
+let index = 0;
+
+function typeWriter() {
+    if (index < text.length) {
+        typewriterElement.innerHTML = text.substring(0, index + 1) + '<span class="caret">|</span>';
+        index++;
+        setTimeout(typeWriter, 80); // Adjust speed here (milliseconds)
+    } else {
+        // Keep the caret blinking after typing is complete
+        typewriterElement.innerHTML = text + '<span class="caret">|</span>';
+    }
+}
+
+// Start typing animation after page load
+window.addEventListener('load', () => {
+    setTimeout(typeWriter, 1000); // Start after 1 second
+});
+
+// Half-sticky navbar effect
+const topBar = document.querySelector('.top-bar');
+const headerNav = document.querySelector('.header-nav');
+const navWrapper = document.querySelector('.nav-wrapper');
+
+function handleScroll() {
+    const topBarRect = topBar.getBoundingClientRect();
+    const navWrapperRect = navWrapper.getBoundingClientRect();
+    
+    // Check if nav wrapper has scrolled past the middle of the top bar
+    const navMiddle = navWrapperRect.top + (navWrapperRect.height / 2);
+    const topBarMiddle = topBarRect.top + (topBarRect.height / 2);
+    
+    if (navMiddle <= topBarMiddle && window.scrollY > 0) {
+        headerNav.classList.add('nav-stuck');
+    } else {
+        headerNav.classList.remove('nav-stuck');
+    }
+}
+
+window.addEventListener('scroll', handleScroll);
+
+// Alice animation trigger
+window.addEventListener('load', () => {
+    const aliceContainer = document.querySelector('.alice-container');
+    if (aliceContainer) {
+        // Add a class to trigger the animation after page load
+        setTimeout(() => {
+            aliceContainer.classList.add('animate-alice');
+        }, 500);
+    }
+});
+</script>
+
+<script>
+  // Toggle mobile menu
+  const menuToggle = document.querySelector('.menu-toggle');
+  const nav = document.querySelector('.header-nav');
+
+  menuToggle.addEventListener('click', () => {
+    nav.classList.toggle('show');
+  });
+</script>
+
+
 
 </body>
 </html>
