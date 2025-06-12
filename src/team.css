@@ -1,0 +1,87 @@
+.team-section {
+  padding: 0 5%;
+  width: 100%;
+  max-width: 100vw; /* Prevent horizontal scroll */
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  margin-top: clamp(2rem, 4vh, 3rem); /* Reduced gap from Events section */
+}
+
+.team-title {
+  text-align: center;
+  font-family: 'Antic Didone', serif;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  color: #99b0ea;
+  margin-bottom: clamp(2rem, 4vh, 3rem); /* Reduced from clamp(rem, 4vh, 3rem) */
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+}
+
+.team-layer {
+  margin-bottom: clamp(4rem, 10vh, 6rem);
+}
+.team-layer-title {
+  text-align: center;
+  font-family: 'Antic Didone', serif;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  color: white;
+  margin-top: clamp(2.5rem, 6vh, 4rem); /* Increased gap between committee title and photos */
+  margin-bottom: clamp(2.5rem, 6vh, 4rem); /* Increased gap between committee title and photos */
+  font-weight: bold;
+}
+
+.team-grid {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: clamp(3rem, 6vw, 5rem); /* Increased gap between photos */
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.team-member {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; color: white; font-family: 'Antic Didone', serif;
+  max-width: 200px;
+}
+
+.member-photo {
+  width: clamp(120px, 15vw, 150px);
+  height: clamp(120px, 15vw, 150px);
+  border-radius: 50%;
+  background: linear-gradient(135deg, #99b0ea, #606087);
+  margin-bottom: 1rem;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.member-photo:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+}
+
+.member-name {
+  font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+  font-weight: bold;
+  color: #99b0ea;
+}
+.member-position {
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  color: white;
+  line-height: 1.3;
+}
+
+/* Mobile */
+@media (max-width: 1400px) {
+  .team-section {
+    margin-top: clamp(1rem, 4vh, 2rem); /* Further reduced for mobile */
+  }
+  .team-layer { margin-bottom: clamp(3rem, 8vh, 4rem); }
+  .team-layer-title {
+    margin-bottom: clamp(2rem, 5vh, 3rem); /* Adjusted for mobile */
+  }
+  .team-grid { gap: clamp(2rem, 5vw, 3rem); } /* Increased mobile gap too */
+  .team-member { max-width: 150px; }
+  .member-photo { width: clamp(100px, 20vw, 120px); height: clamp(100px, 20vw, 120px); }
+}

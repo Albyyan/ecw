@@ -1,434 +1,73 @@
-.content {
-    position: relative; /* good */
-  overflow: visible;
-}
-
-
-.top-bar {
-    position: fixed;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 4rem;
-    background: linear-gradient(to right, #606087, #1d212c);
-    z-index: 5;
-    animation: slideInFromLeft 1s ease-out forwards;
-}
-
-.logo {
-  position: fixed;
-  top: 0;
-  left: 5vw;
-  width: clamp(6rem, 15vw, 15rem);
-  height: clamp(6rem, 15vw, 15rem);
-  background-image: url('assets/ECWLogo.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  z-index: 11;
-  transform: scale(0);
-  animation: popEffect 0.5s ease-out 0.5s forwards, spin 4s linear 1s infinite;
-}
-
-
-.nav-wrapper {
-  position: relative;
-  z-index: 9;
-    margin-top: 4rem;  /* same as .top-bar height */
-
-}
-
-.header-nav {
-  position: sticky;
-  top: 4rem; /* height of .top-bar */
-  display: flex;
-  justify-content: flex-end;
-  gap: 2rem;
+/* General Layout */
+.content { 
+  position: relative; 
+  z-index: 10; /* Lower than heading */
   width: 100%;
-  background: transparent;
-  padding: 0.5rem 2rem;
-  z-index: 11; /* higher than top-bar */
-  transition: all 0.3s ease;
+  max-width: 100vw;
+  pointer-events: auto;
+  overflow-x: hidden;
+  /* Ensure sticky positioning works within content */
 }
 
-/* Half-sticky effect when nav reaches middle of top bar */
-.header-nav.nav-stuck {
-  position: fixed;
-  top: 2rem; /* middle of the 4rem top bar */
-  left: 0;
-  right: 0;
-  background: rgba(29, 33, 44, 0.95);
-  backdrop-filter: blur(15px);
-  border-radius: 0 0 1rem 1rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-  width: 100%;
-}
-
-.header-nav a {
-    color: white;
-    text-decoration: none;
-    font-family: 'Antic Didone', serif;
-    font-size: 2rem;
-    font-weight: 400;
-    padding: 0.5rem 2rem;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-    transform: scale(0);
-}
-
-.header-nav a::after {
-    content: '';
-    position: absolute;
-    bottom: 0.2rem;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background-color: #99b0ea;
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.4s ease-out, opacity 0.2s ease-out;
-    opacity: 0; /* Hide initially */
-}
-
-.header-nav a:hover::after {
-    transform: scaleX(1);
-    opacity: 1; /* Fade in only on hover */
-}
-
-/* Trigger on hover */
-.header-nav a:hover::after {
-    transform: scaleX(1);
-}
-.header-nav a:nth-child(1) {
-    animation: popInNav 0.4s ease-out 1.5s forwards;
-}
-
-.header-nav a:nth-child(2) {
-    animation: popInNav 0.4s ease-out 1.8s forwards;
-}
-
-.header-nav a:nth-child(3) {
-    animation: popInNav 0.4s ease-out 2.1s forwards;
-}
-
-.header-nav a:nth-child(4) {
-    animation: popInNav 0.4s ease-out 2.4s forwards;
-}
-
+/* Typewriter */
 .ecw-heading {
-  position: absolute;
-  top: 15rem;
-  left: 15%;
-  width: 70%;
+  position: relative;
+  margin-top: clamp(10rem, 25vh, 18rem);
+  margin-bottom: 1.2rem;
+  padding: 0 15%;
+  width: 100%;
+  background: rgba(0,0,0,0.1); /* Subtle background to test visibility */
 }
-
 .ecw-heading p {
   font-family: 'Antic Didone', serif !important;
-  font-size: 5vw;
+  font-size: clamp(3rem, 5vw, 5rem);
   line-height: 0.9;
   margin: 0;
   font-weight: bold;
-  color: white;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  text-align: left; /* ensure left alignment */
-  min-height: 1.2em; /* Prevent layout shift during typing */
+  color: white !important; /* Force white color */
+  text-align: left;
+  min-height: 3em;
+  position: relative;
+  display: block !important; /* Force display */
+  visibility: visible !important; /* Force visibility */
+  opacity: 1 !important; /* Force opacity */
 }
+.caret { animation: blink 1s infinite; color: #99b0ea; }
 
-/* Typewriter caret */
-.caret {
-  animation: blink 1s infinite;
-  color: #99b0ea;
-}
+@keyframes blink { 0%, 50% {opacity: 1;} 51%, 100% {opacity: 0;} }
 
-@keyframes blink {
-  0%, 50% {
-    opacity: 1;
-  }
-  51%, 100% {
-    opacity: 0;
-  }
-}
-
+/* Marquee */
 .marquee-container {
-  position: absolute;
-  top: 36rem;
-  left: 10%;
-  width: 75%;
+  position: relative;
+  margin: 0.8rem auto;
+  width: 75%; max-width: 1200px;
   overflow: hidden;
   z-index: 2;
-
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    black 15%,
-    black 90%,
-    transparent 100%
-  );
-  mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    black 15%,
-    black 90%,
-    transparent 100%
-  );
-
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
+  display: flex; align-items: center;
+  min-height: 3rem;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 90%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 15%, black 90%, transparent 100%);
 }
-
 .marquee-track {
   display: flex;
   width: max-content;
   animation: rushIn 1.2s ease-out 0s forwards, scrollMarquee 30s linear 1.2s infinite;
-  transform: translateX(100%); /* Start completely off screen */
+  transform: translateX(100%);
 }
-
 .marquee-text {
-  flex-shrink: 0;
-  padding-right: 5rem;
+  flex-shrink: 0; padding-right: 5rem;
   font-family: 'Antic Didone', serif;
-  font-size: 2rem;
-  white-space: nowrap;
-  color: white;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+  white-space: nowrap; /* Prevent text wrapping that could cause horizontal scroll */
 }
-
-.marquee-line {
-  position: absolute;
-  left: 12.5%;
-  width: 0%;
-  height: 2px;
-  background-color: #99b0ea;
-  animation: growLine 1.2s ease-out forwards;
-  z-index: 3;
+.marquee-line { 
+  position: relative; margin: 0 auto; width: 0%; height: 2px; 
+  background-color: #99b0ea; animation: growLine 1.2s ease-out forwards; z-index: 3; 
 }
+.top-line { margin-bottom: 0.1rem; }
+.bottom-line { margin-top: 0.1rem; margin-bottom: clamp(1.5rem, 4vh, 3rem); }
 
-
-.top-line {
-  top: 33.5rem;      /* just above 30rem marquee container */
-}
-
-.bottom-line {
-  top: 41rem;        /* just below the container */
-}
-
-
-.about-us-section {
-  display: flex;
-  margin-top: 6rem;
-  min-height: 200vh;
-  padding: 0 10%;
-  align-items: center;
-  justify-content: space-between;
-  z-index: 1;
-}
-
-
-/* Alice image with floating animation */
-.about-graphic-placeholder {
-  width: 35%;
-  height: 50vh;
-  background-image: url('assets/Alice.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  border-radius: 1rem;
-  transform: translateX(-150%);
-  opacity: 0;
-}
-
-.alice-container.animate-alice {
-  animation: 
-    floatInFromLeft 2s ease-out forwards,
-    erraticFloat 6s ease-in-out 2s infinite;
-}
-
-/* Right text block */
-.about-text {
-  width: 45%;
-  color: white;
-  font-family: 'Antic Didone', serif;
-}
-
-.about-text h2 {
-  font-size: 3rem;
-  font-weight: bold;
-  margin-bottom: 1.5rem;
-  text-align: left;
-  color: #99b0ea;
-}
-
-.about-text p {
-  font-size: 1.5rem;
-  line-height: 1.6;
-  text-align: left;
-}
-
-
-@keyframes growLine {
-  0% {
-    width: 0%;
-  }
-  100% {
-    width: 70%;
-  }
-}
-
-
-@keyframes rushIn {
-  0% {
-    transform: translateX(100%);
-  }
-  100% {
-    transform: translateX(0%);
-  }
-}
-
-@keyframes scrollMarquee {
-  0% {
-    transform: translateX(0%);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-
-@keyframes fadeInHeading {
-  to {
-    opacity: 1;
-  }
-}
-
-
-@keyframes slideInFromLeft {
-    0% {
-        left: -100%;
-    }
-    100% {
-        left: 0;
-    }
-}
-
-@keyframes popEffect {
-    0% {
-        transform: scale(0);
-    }
-    70% {
-        transform: scale(1.3);
-    }
-    100% {
-        transform: scale(1);
-    }
-}
-
-@keyframes popInNav {
-    0% {
-        transform: scale(0);
-    }
-    70% {
-        transform: scale(1.2);
-    }
-    100% {
-        transform: scale(1);
-    }
-}
-
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-/* Alice floating animations */
-@keyframes floatInFromLeft {
-  0% {
-    transform: translateX(-150%);
-    opacity: 0;
-  }
-  100% {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-@keyframes erraticFloat {
-  0% {
-    transform: translateX(0) translateY(0) rotate(0deg);
-  }
-  15% {
-    transform: translateX(20px) translateY(-15px) rotate(2deg);
-  }
-  30% {
-    transform: translateX(-10px) translateY(25px) rotate(-1deg);
-  }
-  45% {
-    transform: translateX(25px) translateY(-20px) rotate(3deg);
-  }
-  60% {
-    transform: translateX(-20px) translateY(10px) rotate(-2deg);
-  }
-  75% {
-    transform: translateX(15px) translateY(-25px) rotate(1deg);
-  }
-  90% {
-    transform: translateX(-25px) translateY(20px) rotate(-3deg);
-  }
-  100% {
-    transform: translateX(0) translateY(0) rotate(0deg);
-  }
-}
-/* === Mobile Navbar Toggle === */
-.menu-toggle {
-  display: none; /* Hidden by default (desktop) */
-}
-
-@media (max-width: 1400px) {
-  .menu-toggle {
-    display: block;
-    background: none;
-    border: none;
-    color: white;
-    font-size: 2.5rem;
-    cursor: pointer;
-    position: fixed;
-    top: 1rem;
-    right: 1.5rem;
-    z-index: 100;
-  }
-
-  .header-nav {
-    display: none;
-    flex-direction: column;
-    position: fixed;
-    top: 4rem;
-    right: 0;
-    background-color: rgba(29, 33, 44, 0.95);
-    padding: 1rem 2rem;
-    border-radius: 0 0 0 1rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-    width: 60%;
-    z-index: 99;
-  }
-
-  .header-nav.show {
-    display: flex;
-  }
-
-  .header-nav a {
-    font-size: 1.5rem;
-    padding: 1rem 0;
-    transform: none !important; /* override animations */
-  }
-
-  .header-nav.nav-stuck {
-    position: fixed;
-    top: 4rem;
-  }
-}
+@keyframes growLine { 0% { width: 0%; } 100% { width: 70%; } }
+@keyframes rushIn { 0% { transform: translateX(100%); } 100% { transform: translateX(0%); } }
+@keyframes scrollMarquee { 0% { transform: translateX(0%); } 100% { transform: translateX(-50%); } }

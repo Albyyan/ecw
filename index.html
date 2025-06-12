@@ -1,133 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ECW Society</title>
-    <link rel="stylesheet" href="src/stars.css">
-    <link rel="stylesheet" href="src/page.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Antic+Didone&family=Cascadia+Mono:ital,wght@0,200..700;1,200..700&family=Jockey+One&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UNSW ECW</title>
+  <link rel="icon" type="image/png" href="/src/assets/ECWLogo.png" />
+
+  <!-- Modular CSS imports -->
+  <link rel="stylesheet" href="/src/page.css" />
+  <link rel="stylesheet" href="/src/navbar.css" />
+  <link rel="stylesheet" href="/src/about.css" />
+  <link rel="stylesheet" href="/src/events.css" />
+  <link rel="stylesheet" href="/src/team.css" />
+  <link rel="stylesheet" href="/src/footer.css" />
+  <link rel="stylesheet" href="/src/stars.css" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Antic+Didone&family=Cascadia+Mono:ital,wght@0,200..700;1,200..700&family=Jockey+One&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet" />
 </head>
 <body>
-    <div class="background-container">
-        <div class="background-back"></div>
-        <div class="background-front"></div>
-    </div>
-
-    <div class="content">
-<div class="top-bar"></div>
-<div class="logo"></div>
-
-<div class="nav-wrapper">
-  <button class="menu-toggle" aria-label="Toggle Menu">&#9776;</button>
-  <nav class="header-nav">
-    <a href="#about">ABOUT US</a>
-    <a href="#events">EVENTS</a>
-    <a href="#team">THE TEAM</a>
-    <a href="#inspired">GET INSPIRED</a>
-  </nav>
-</div>
-
-
-<div class="ecw-heading">
-  <p id="typewriter-text"></p>
-</div>
-<!-- Add these OUTSIDE the container, but in the same relative section -->
-<div class="marquee-line top-line"></div>
-
-<div class="marquee-container">
-  <div class="marquee-track">
-    <div class="marquee-text">We are where ink meets paper and thoughts become stories. Where words are drawn together like sand washed ashore, building crumbling castles with cracked seashells for windows.
-
-</div>
-    <div class="marquee-text" id="about">We are where ink meets paper and thoughts become stories. Where words are drawn together like sand washed ashore, building crumbling castles with cracked seashells for windows.
-
-</div>
-  </div>
-</div>
-<!-- End of marquee -->
-<div class="marquee-line bottom-line"></div>
-
-<!-- START About Us section -->
-<section class="about-us-section">
-  <div class="about-graphic-placeholder alice-container"></div>
-  <div class="about-text">
-    <h2>ABOUT US</h2>
-    <p>
-We are the English & Creative Writing Society, a pen of readers and writers who aim to fill pages and conjure stories from the wells of their imagination. We offer a sanctuary for the private wordsmiths to write away under the promise of warm reception when they are ready to share. For the jesters and poets who buzz off the ears and eyes that consume their work, we offer an audience eager to give feedback and noise. You will find a community here, for just because writing is an endeavour taken alone, it is not one that has to be lonely.
-    </p>
-  </div>
-</section>
-
-<script>
-// Typewriter effect
-const text = "WE ARE THE UNSW ENGLISH AND CREATIVE WRITING SOCIETY.";
-const typewriterElement = document.getElementById('typewriter-text');
-let index = 0;
-
-function typeWriter() {
-    if (index < text.length) {
-        typewriterElement.innerHTML = text.substring(0, index + 1) + '<span class="caret">|</span>';
-        index++;
-        setTimeout(typeWriter, 80); // Adjust speed here (milliseconds)
-    } else {
-        // Keep the caret blinking after typing is complete
-        typewriterElement.innerHTML = text + '<span class="caret">|</span>';
-    }
-}
-
-// Start typing animation after page load
-window.addEventListener('load', () => {
-    setTimeout(typeWriter, 1000); // Start after 1 second
-});
-
-// Half-sticky navbar effect
-const topBar = document.querySelector('.top-bar');
-const headerNav = document.querySelector('.header-nav');
-const navWrapper = document.querySelector('.nav-wrapper');
-
-function handleScroll() {
-    const topBarRect = topBar.getBoundingClientRect();
-    const navWrapperRect = navWrapper.getBoundingClientRect();
-    
-    // Check if nav wrapper has scrolled past the middle of the top bar
-    const navMiddle = navWrapperRect.top + (navWrapperRect.height / 2);
-    const topBarMiddle = topBarRect.top + (topBarRect.height / 2);
-    
-    if (navMiddle <= topBarMiddle && window.scrollY > 0) {
-        headerNav.classList.add('nav-stuck');
-    } else {
-        headerNav.classList.remove('nav-stuck');
-    }
-}
-
-window.addEventListener('scroll', handleScroll);
-
-// Alice animation trigger
-window.addEventListener('load', () => {
-    const aliceContainer = document.querySelector('.alice-container');
-    if (aliceContainer) {
-        // Add a class to trigger the animation after page load
-        setTimeout(() => {
-            aliceContainer.classList.add('animate-alice');
-        }, 500);
-    }
-});
-</script>
-
-<script>
-  // Toggle mobile menu
-  const menuToggle = document.querySelector('.menu-toggle');
-  const nav = document.querySelector('.header-nav');
-
-  menuToggle.addEventListener('click', () => {
-    nav.classList.toggle('show');
-  });
-</script>
-
-
-
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>
