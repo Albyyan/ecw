@@ -62,141 +62,130 @@ export default function App() {
     }
 
     window.addEventListener('scroll', handleAliceScroll);
-    handleAliceScroll(); // Check on mount
+    handleAliceScroll();
     return () => window.removeEventListener('scroll', handleAliceScroll);
   }, []);
 
+  // === TV Smooth Follow ===
+  useEffect(() => {
+    const section = document.querySelector('.events-section');
+    const inner = document.querySelector('.tv-inner');
+    if (!section || !inner) return;
 
-// === Smooth TV Follow (no snap) ===
-useEffect(() => {
-  const section = document.querySelector('.events-section');
-  const rail = document.querySelector('.tv-rail');
-  const inner = document.querySelector('.tv-inner');
+    let current = 0, target = 0, rafId = 0;
 
-  if (!section || !rail || !inner) return;
+    const measure = () => {
+      const sectionRect = section.getBoundingClientRect();
+      const sectionTop = window.scrollY + sectionRect.top;
+      const sectionHeight = sectionRect.height;
 
-  let current = 0;      // current Y (animated)
-  let target = 0;       // target Y (instant, from scroll)
-  let rafId = 0;
+      const innerRect = inner.getBoundingClientRect();
+      const innerHeight = innerRect.height;
 
-  function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+      const viewportY = window.scrollY + 100;
+      const raw = viewportY - sectionTop;
+      target = Math.max(0, Math.min(raw, Math.max(0, sectionHeight - innerHeight)));
+    };
 
-  function measure() {
-    const sectionRect = section.getBoundingClientRect();
-    const sectionTop = window.scrollY + sectionRect.top;
-    const sectionHeight = sectionRect.height;
+    const animate = () => {
+      current += (target - current) * 0.15;
+      inner.style.transform = `translateY(${current}px)`;
+      rafId = requestAnimationFrame(animate);
+    };
 
-    const innerRect = inner.getBoundingClientRect();
-    const innerHeight = innerRect.height;
+    const onScroll = () => measure();
+    const onResize = () => { measure(); current = target; inner.style.transform = `translateY(${current}px)`; };
 
-    // Where should the TV be relative to the section, with a nice offset
-    const viewportY = window.scrollY + 100; // 100px “comfort” from top of viewport
-    const raw = viewportY - sectionTop;
-    target = clamp(raw, 0, Math.max(0, sectionHeight - innerHeight));
-  }
+    const ro = new ResizeObserver(() => onResize());
+    ro.observe(inner);
 
-  function animate() {
-    // Lerp for butter-smooth movement (smaller factor = smoother)
-    current += (target - current) * 0.15;
-    inner.style.transform = `translateY(${current}px)`;
-    rafId = requestAnimationFrame(animate);
-  }
+    const imgs = inner.querySelectorAll('img');
+    let pending = imgs.length;
+    if (pending === 0) measure();
+    imgs.forEach(img => {
+      if (img.complete) { if (--pending === 0) onResize(); }
+      else img.addEventListener('load', () => { if (--pending === 0) onResize(); }, { once: true });
+    });
 
-  function onScroll() {
-    measure();
-  }
-
-  function onResize() {
-    // Recompute bounds on resize and reset current near target to avoid jumps
     measure();
     current = target;
     inner.style.transform = `translateY(${current}px)`;
-  }
+    rafId = requestAnimationFrame(animate);
 
-  // Initial measure + start loop
-  measure();
-  current = target;
-  inner.style.transform = `translateY(${current}px)`;
-  rafId = requestAnimationFrame(animate);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onResize);
 
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onResize);
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onResize);
+      ro.disconnect();
+    };
+  }, []);
 
-  return () => {
-    cancelAnimationFrame(rafId);
-    window.removeEventListener('scroll', onScroll);
-    window.removeEventListener('resize', onResize);
-  };
-}, []);
-// === TV Image Swap on scroll (closest event to viewport center) ===
-useEffect(() => {
-  const items = Array.from(
-    document.querySelectorAll('.event-item[data-tv-content]')
-  );
-  const byId = {
-    www: document.getElementById('www'),
-    wow: document.getElementById('wow'),
-    arc: document.getElementById('arc'),
-  };
+  // === TV Image Swap on Scroll ===
+  useEffect(() => {
+    const items = Array.from(
+      document.querySelectorAll('.event-item[data-tv-content]')
+    );
+    const byId = {
+      www: document.getElementById('www'),
+      wow: document.getElementById('wow'),
+      arc: document.getElementById('arc'),
+    };
 
-  if (items.length === 0 || !byId.www || !byId.wow || !byId.arc) return;
+    if (items.length === 0 || !byId.www || !byId.wow || !byId.arc) return;
 
-  // Helper: set the active image
-  function setActive(id) {
-    Object.values(byId).forEach((img) => img && img.classList.remove('active'));
-    byId[id]?.classList.add('active');
-  }
+    function setActive(id) {
+      Object.values(byId).forEach((img) => img && img.classList.remove('active'));
+      byId[id]?.classList.add('active');
+    }
 
-  // Use IntersectionObserver to know when an item is on screen,
-  // then pick the one whose center is closest to the viewport center.
-  const io = new IntersectionObserver(
-    () => {
+    const io = new IntersectionObserver(
+      () => {
+        let best = null;
+        const viewportCenter = window.innerHeight / 2;
+
+        for (const el of items) {
+          const rect = el.getBoundingClientRect();
+          if (rect.bottom <= 0 || rect.top >= window.innerHeight) continue;
+
+          const elCenter = rect.top + rect.height / 2;
+          const dist = Math.abs(elCenter - viewportCenter);
+          if (!best || dist < best.dist) {
+            best = { id: el.dataset.tvContent, dist };
+          }
+        }
+
+        if (best) setActive(best.id);
+      },
+      { threshold: [0, 0.25, 0.5, 0.75, 1] }
+    );
+
+    items.forEach((el) => io.observe(el));
+    setActive(items[0]?.dataset.tvContent || 'www');
+
+    function onScroll() {
+      io.takeRecords();
       let best = null;
       const viewportCenter = window.innerHeight / 2;
-
       for (const el of items) {
         const rect = el.getBoundingClientRect();
-        if (rect.bottom <= 0 || rect.top >= window.innerHeight) continue; // not visible at all
-
+        if (rect.bottom <= 0 || rect.top >= window.innerHeight) continue;
         const elCenter = rect.top + rect.height / 2;
         const dist = Math.abs(elCenter - viewportCenter);
-        if (!best || dist < best.dist) {
-          best = { id: el.dataset.tvContent, dist };
-        }
+        if (!best || dist < best.dist) best = { id: el.dataset.tvContent, dist };
       }
-
       if (best) setActive(best.id);
-    },
-    { threshold: [0, 0.25, 0.5, 0.75, 1] }
-  );
-
-  items.forEach((el) => io.observe(el));
-  // Initial state
-  setActive(items[0]?.dataset.tvContent || 'www');
-
-  // Re-evaluate on scroll (smooth + reliable)
-  function onScroll() {
-    io.takeRecords(); // flush pending entries
-    // trigger our selection logic:
-    let best = null;
-    const viewportCenter = window.innerHeight / 2;
-    for (const el of items) {
-      const rect = el.getBoundingClientRect();
-      if (rect.bottom <= 0 || rect.top >= window.innerHeight) continue;
-      const elCenter = rect.top + rect.height / 2;
-      const dist = Math.abs(elCenter - viewportCenter);
-      if (!best || dist < best.dist) best = { id: el.dataset.tvContent, dist };
     }
-    if (best) setActive(best.id);
-  }
 
-  window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('scroll', onScroll, { passive: true });
 
-  return () => {
-    io.disconnect();
-    window.removeEventListener('scroll', onScroll);
-  };
-}, []);
+    return () => {
+      io.disconnect();
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, []);
 
   return (
     <>
@@ -217,7 +206,6 @@ useEffect(() => {
             <a href="#about">ABOUT US</a>
             <a href="#events">EVENTS</a>
             <a href="#team">THE TEAM</a>
-            <a href="#inspired">GET INSPIRED</a>
           </nav>
         </div>
 
@@ -268,16 +256,16 @@ useEffect(() => {
         <section className="events-section" id="events">
           <h2 className="events-title section-title">EVENTS</h2>
 
-            <div className="events-content">
+          <div className="events-content">
             {/* TV: smooth-follow rail */}
             <div className="tv-rail">
               <div className="tv-inner">
                 <div className="tv-screen">
-                  <img id="www" className="tv-image tv-content" src="src/assets/WWWPhoto.jpg" alt="Weekly Writing Workshop" />
-                  <img id="wow" className="tv-image tv-content" src="src/assets/WOWPhoto.jpg" alt="Works of Writing" />
-                  <img id="arc" className="tv-image tv-content" src="src/assets/ArcPhoto.jpg" alt="UNSW O-Week" />
+                  <img id="www" className="tv-image tv-content" src="WWWPhoto.jpg" alt="Weekly Writing Workshop" />
+                  <img id="wow" className="tv-image tv-content" src="WOWPhoto.jpg" alt="Works of Writing" />
+                  <img id="arc" className="tv-image tv-content" src="ArcPhoto.jpg" alt="UNSW O-Week" />
                 </div>
-                <img className="tv-frame" src="src/assets/tv.png" alt="TV frame" />
+                <img className="tv-frame" src="tv.png" alt="TV frame" />
               </div>
             </div>
 
@@ -343,28 +331,28 @@ useEffect(() => {
             <div className="team-grid">
               <div className="team-member">
                 <div className="member-photo">
-                  <img src="src/assets/Chalene_Mugshot.jpg" alt="Chalene Kuklin" />
+                  <img src="Chalene_Mugshot.jpg" alt="Chalene Kuklin" />
                 </div>
                 <div className="member-name">Chalene Kuklin</div>
                 <div className="member-position">President</div>
               </div>
               <div className="team-member">
                 <div className="member-photo">
-                  <img src="src/assets/Yifei_Mugshot.jpg" alt="Yifei (Lucy) Pan" />
+                  <img src="Yifei_Mugshot.jpg" alt="Yifei (Lucy) Pan" />
                 </div>
                 <div className="member-name">Yifei (Lucy) Pan</div>
                 <div className="member-position">Secretary</div>
               </div>
               <div className="team-member">
                 <div className="member-photo">
-                  <img src="src/assets/Albert_Mugshot.jpg" alt="Albert Yan" />
+                  <img src="Albert_Mugshot.jpg" alt="Albert Yan" />
                 </div>
                 <div className="member-name">Albert Yan</div>
                 <div className="member-position">Treasurer</div>
               </div>
               <div className="team-member">
                 <div className="member-photo">
-                  <img src="src/assets/John_Mugshot.jpg" alt="Jennifer Nguyen" />
+                  <img src="John_Mugshot.jpg" alt="Jennifer Nguyen" />
                 </div>
                 <div className="member-name">Jennifer Nguyen</div>
                 <div className="member-position">Welfare Officer</div>
@@ -375,21 +363,21 @@ useEffect(() => {
             <div className="team-grid">
               <div className="team-member">
                 <div className="member-photo">
-                  <img src="src/assets/Harper_Mugshot.png" alt="Harper Spits" />
+                  <img src="Harper_Mugshot.png" alt="Harper Spits" />
                 </div>
                 <div className="member-name">Harper Spits</div>
                 <div className="member-position">Events Director</div>
               </div>
               <div className="team-member">
                 <div className="member-photo">
-                  <img src="src/assets/Johnny_Mugshot.jpg" alt="Johnny Pham" />
+                  <img src="Johnny_Mugshot.jpg" alt="Johnny Pham" />
                 </div>
                 <div className="member-name">Johnny Pham</div>
                 <div className="member-position">Marketing Director</div>
               </div>
               <div className="team-member">
                 <div className="member-photo">
-                  <img src="src/assets/Alan.webp" alt="Alan Nguyen" />
+                  <img src="Alan.webp" alt="Alan Nguyen" />
                 </div>
                 <div className="member-name">Alan Nguyen</div>
                 <div className="member-position">Consultative Director</div>
@@ -399,67 +387,65 @@ useEffect(() => {
         </section>
 
         {/* Footer */}
-<footer className="site-footer">
-  <div className="footer-content">
-    <div className="social-links">
-      <a
-        className="contact-link"
-        href="https://discord.gg/R9TkzV7yg3"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Discord"
-      >
-        <div className="contact-icon">
-          <img src="src/assets/discord.png" alt="Discord" />
-        </div>
-      </a>
+        <footer className="site-footer">
+          <div className="footer-content">
+            <div className="social-links">
+              <a
+                className="contact-link"
+                href="https://discord.gg/R9TkzV7yg3"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Discord"
+              >
+                <div className="contact-icon">
+                  <img src="discord.png" alt="Discord" />
+                </div>
+              </a>
 
-      <a
-        className="contact-link"
-        href="https://www.instagram.com/unswecwsoc/"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Instagram"
-      >
-        <div className="contact-icon">
-          <img src="src/assets/insta.png" alt="Instagram" />
-        </div>
-      </a>
+              <a
+                className="contact-link"
+                href="https://www.instagram.com/unswecwsoc/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+              >
+                <div className="contact-icon">
+                  <img src="insta.png" alt="Instagram" />
+                </div>
+              </a>
 
-      <a
-        className="contact-link"
-        href="https://www.facebook.com/profile.php?id=61551478253920"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Facebook"
-      >
-        <div className="contact-icon">
-          <img src="src/assets/email.png" alt="Facebook" />
-        </div>
-      </a>
+              <a
+                className="contact-link"
+                href="https://www.facebook.com/profile.php?id=61551478253920"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+              >
+                <div className="contact-icon">
+                  <img src="email.png" alt="Facebook" />
+                </div>
+              </a>
 
-
-      <a
-        className="contact-link"
-        href="https://campus.hellorubric.com/?s=12523"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="ARC / Rubric"
-      >
-        <div className="contact-icon">
-          <img src="src/assets/arc.png" alt="ARC / Rubric" />
-        </div>
-      </a>
-    </div>
-    <p className="footer-text">
-      © {new Date().getFullYear()} UNSW English & Creative Writing Society — All Rights Reserved
-    </p>
-    <p className="footer-text">
-      Website Design by Albert Yan
-    </p>
-  </div>
-</footer>
-
+              <a
+                className="contact-link"
+                href="https://campus.hellorubric.com/?s=12523"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="ARC / Rubric"
+              >
+                <div className="contact-icon">
+                  <img src="arc.png" alt="ARC / Rubric" />
+                </div>
+              </a>
+            </div>
+            <p className="footer-text">
+              © {new Date().getFullYear()} UNSW English & Creative Writing Society — All Rights Reserved
+            </p>
+            <p className="footer-text">
+              Website Design by Albert Yan
+            </p>
+          </div>
+        </footer>
       </div>
     </>
   );
