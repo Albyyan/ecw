@@ -1,6 +1,36 @@
-import React, { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import Spotify from './Spotify';
 
 export default function App() {
+  const spotifyController = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const handleSpotifyReady = (controller) => {
+    spotifyController.current = controller;
+
+    controller.addListener('playback_update', (e) => {
+      const playing = !e.data.isPaused;
+      setIsPlaying(playing);
+
+      const logo = document.querySelector('.logo');
+      if (logo) {
+        logo.style.animationPlayState = playing ? 'running' : 'paused';
+      }
+    });
+  };
+
+  const handlePlayPause = () => {
+    if (!spotifyController.current) return;
+    if (isPlaying) {
+      spotifyController.current.pause();
+    } else {
+      spotifyController.current.resume();
+    }
+  };
+
+  const handleNext = () => spotifyController.current?.nextTrack();
+  const handlePrev = () => spotifyController.current?.previousTrack();
+
   // === Typewriter Effect ===
   useEffect(() => {
     const text = "WE ARE THE UNSW ENGLISH & CREATIVE WRITING SOCIETY.";
@@ -88,7 +118,7 @@ export default function App() {
     };
 
     const animate = () => {
-      current += (target - current) * 0.15;
+      current += (target - current) * 0.2;
       inner.style.transform = `translateY(${current}px)`;
       rafId = requestAnimationFrame(animate);
     };
@@ -200,6 +230,19 @@ export default function App() {
         {/* Navigation */}
         <div className="top-bar"></div>
         <div className="logo"></div>
+
+        <div className="logo-controls">
+          <button onClick={handlePrev} aria-label="Previous">⏮</button>
+          <button onClick={handlePlayPause} aria-label="Play/Pause">
+            {isPlaying ? '⏸' : '▶'}
+          </button>
+          <button onClick={handleNext} aria-label="Next">⏭</button>
+        </div>
+
+        <Spotify
+          playlistId="37i9dQZF1DX4sWSpwq3LiO"
+          onReady={handleSpotifyReady}
+        />
 
         <div className="nav-wrapper">
           <nav className="header-nav">
