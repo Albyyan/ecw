@@ -1,12 +1,74 @@
-# React + Vite
+# ₊✩‧₊˚౨ৎ˚₊✩‧₊ English & Creative Writing Society Website ₊✩‧₊˚౨ৎ˚₊✩‧₊
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Welcome to the official repository for the English & Creative Writing Society Website — a collaborative project developed by the society’s software team to support its creative and operational activities.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## About the Project ˚⟡˖ ࣪
 
-## Expanding the ESLint configuration
+This website serves as the online platform for the society, designed to:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Showcase student writing and creative work  
+- Promote events, workshops, and discussions  
+- Provide a centralised space for society activities  
+- Maintain a consistent and modern digital presence  
+
+The project is developed and maintained by the society’s internal software team, started by Albert Yan in 2024.
+
+---
+
+## Development Approach 𑣲⋆｡˚
+
+This project is a collaborative effort within the society’s development team.
+
+Work on the website is coordinated through:
+
+- Shared code ownership across team members  
+- Defined responsibilities and feature allocation  
+- Iterative development and internal review  
+- Consistent coding and design standards  
+
+Contributions are managed to ensure stability, maintainability, and alignment with the society’s goals.
+
+---
+
+## Tech Stack ⋆𐙚₊˚⊹♡
+
+(Adjust depending on your setup)
+
+- Frontend: React / Vite  
+- Styling: CSS  
+- Deployment: To Be Figured Out (most likely Cloudflare)
+
+---
+
+## Project Structure ᡣ𐭩 •｡ꪆৎ ˚⋅
+
+/src        → Main application code  
+/assets     → Images, fonts, and media  
+/components → Reusable UI components  
+/pages      → Page-level views (Home, Blog, Events, etc.)  
+/public     → Static files  
+
+---
+
+## Getting Started ˚⋆𐙚｡⋆
+
+Clone the repository:
+
+git clone https://github.com/your-repo/society-website.git  
+cd society-website  
+
+Install dependencies:
+
+npm install  
+
+Run the development server:
+
+npm run dev  
+
+---
+
+## Contact ⋆｡˚𓇼
+
+For development-related queries, contact the society’s software team.
