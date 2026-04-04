@@ -56,7 +56,7 @@ Contributions are managed to ensure stability, maintainability, and alignment wi
 
 Clone the repository:
 
-git clone https://github.com/your-repo/society-website.git  
+git clone [https://github.com/your-repo/society-website.git  ](https://github.com/Albyyan/ecw.git)
 cd society-website  
 
 Install dependencies:
