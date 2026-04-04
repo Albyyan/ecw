@@ -1,4 +1,4 @@
-# ₊✩‧₊˚౨ৎ˚₊✩‧₊ English & Creative Writing Society Website ₊✩‧₊˚౨ৎ˚₊✩‧₊
+# ₊✩‧₊˚౨ৎ˚₊✩‧₊ English & Creative Writing Society Website
 
 Welcome to the official repository for the English & Creative Writing Society Website — a collaborative project developed by the society’s software team to support its creative and operational activities.
 
